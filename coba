@@ -1,0 +1,210 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Dec 20, 2022 at 10:12 AM
+-- Server version: 10.4.24-MariaDB
+-- PHP Version: 8.1.6
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `coba`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `armada`
+--
+
+CREATE TABLE `armada` (
+  `id_armada` int(11) NOT NULL,
+  `jenisArmada` varchar(255) NOT NULL,
+  `kapasitas` int(11) NOT NULL,
+  `harga` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `armada`
+--
+
+INSERT INTO `armada` (`id_armada`, `jenisArmada`, `kapasitas`, `harga`) VALUES
+(1, 'Ekonomi', 14, 150000),
+(2, 'Premium', 14, 250000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jadwal`
+--
+
+CREATE TABLE `jadwal` (
+  `id_jadwal` int(11) NOT NULL,
+  `hari` varchar(100) NOT NULL,
+  `id_armada` int(11) NOT NULL,
+  `jam` time NOT NULL,
+  `lokasi` varchar(255) NOT NULL,
+  `kotaKeberangkatan` varchar(100) NOT NULL,
+  `tanggal` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `jadwal`
+--
+
+INSERT INTO `jadwal` (`id_jadwal`, `hari`, `id_armada`, `jam`, `lokasi`, `kotaKeberangkatan`, `tanggal`) VALUES
+(1, 'Senin', 1, '11:00:00', 'Gerbel UNS', 'Solo', '2022-12-19'),
+(2, 'Senin', 2, '09:00:00', 'Gerdep UNS', 'Solo', '2022-12-19'),
+(3, 'Selasa', 1, '19:00:00', 'Gerdep UNS', 'Solo', '2022-12-20'),
+(4, 'Selasa', 2, '19:00:00', 'Gerdep UNS', 'Solo', '2022-12-20'),
+(5, 'Rabu', 1, '20:00:00', 'Gerdep UNS', 'Solo', '2022-12-21'),
+(6, 'Rabu', 2, '11:00:00', 'UMS', 'Solo', '2022-12-21'),
+(7, 'Kamis', 1, '11:00:00', 'Pabelan', 'Solo', '2022-12-22');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pemesanan`
+--
+
+CREATE TABLE `pemesanan` (
+  `id_pemesanan` int(11) NOT NULL,
+  `id_pelanggan` int(11) NOT NULL,
+  `id_jadwal` int(11) NOT NULL,
+  `tanggal` date NOT NULL,
+  `jumlahPenumpang` int(11) NOT NULL,
+  `kotaKeberangkatan` varchar(255) NOT NULL,
+  `kotaTujuan` varchar(255) NOT NULL,
+  `id_armada` int(11) NOT NULL,
+  `status` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `pemesanan`
+--
+
+INSERT INTO `pemesanan` (`id_pemesanan`, `id_pelanggan`, `id_jadwal`, `tanggal`, `jumlahPenumpang`, `kotaKeberangkatan`, `kotaTujuan`, `id_armada`, `status`) VALUES
+(1, 2, 2, '2022-12-20', 5, 'Solo', 'Jogja', 2, 'FALSE'),
+(2, 2, 2, '2022-12-20', 5, 'Solo', 'Jogja', 2, 'FALSE');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `id_pelanggan` int(11) NOT NULL,
+  `username` varchar(30) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `namaLengkap` varchar(255) NOT NULL,
+  `alamat` text NOT NULL,
+  `tempatLahir` varchar(255) NOT NULL,
+  `tanggalLahir` date NOT NULL,
+  `gender` varchar(20) NOT NULL,
+  `noTelepon` int(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `userLevel` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id_pelanggan`, `username`, `password`, `namaLengkap`, `alamat`, `tempatLahir`, `tanggalLahir`, `gender`, `noTelepon`, `email`, `created_at`, `userLevel`) VALUES
+(1, '123', '55656034eb43d2f48de7f517c2880feb', '', '123', '123', '2022-12-09', '1', 887878, 'ardenio88@gmail.com', '2022-12-19 04:50:48', 'USER'),
+(2, 'ronarden', '55656034eb43d2f48de7f517c2880feb', 'Muhammad Arden Prabaswara', 'BTC', 'UNS', '2022-12-02', '1', 2147483647, 'ardenio88@gmail.com', '2022-12-19 05:51:40', 'USER');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `armada`
+--
+ALTER TABLE `armada`
+  ADD PRIMARY KEY (`id_armada`);
+
+--
+-- Indexes for table `jadwal`
+--
+ALTER TABLE `jadwal`
+  ADD PRIMARY KEY (`id_jadwal`),
+  ADD KEY `id_armada` (`id_armada`);
+
+--
+-- Indexes for table `pemesanan`
+--
+ALTER TABLE `pemesanan`
+  ADD PRIMARY KEY (`id_pemesanan`),
+  ADD KEY `id_pelanggan` (`id_pelanggan`),
+  ADD KEY `id_armada` (`id_armada`),
+  ADD KEY `id_jadwal` (`id_jadwal`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id_pelanggan`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `armada`
+--
+ALTER TABLE `armada`
+  MODIFY `id_armada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `jadwal`
+--
+ALTER TABLE `jadwal`
+  MODIFY `id_jadwal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `pemesanan`
+--
+ALTER TABLE `pemesanan`
+  MODIFY `id_pemesanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `id_pelanggan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `jadwal`
+--
+ALTER TABLE `jadwal`
+  ADD CONSTRAINT `jadwal_ibfk_1` FOREIGN KEY (`id_armada`) REFERENCES `armada` (`id_armada`);
+
+--
+-- Constraints for table `pemesanan`
+--
+ALTER TABLE `pemesanan`
+  ADD CONSTRAINT `pemesanan_ibfk_1` FOREIGN KEY (`id_pelanggan`) REFERENCES `user` (`id_pelanggan`),
+  ADD CONSTRAINT `pemesanan_ibfk_2` FOREIGN KEY (`id_armada`) REFERENCES `armada` (`id_armada`),
+  ADD CONSTRAINT `pemesanan_ibfk_3` FOREIGN KEY (`id_jadwal`) REFERENCES `jadwal` (`id_jadwal`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
